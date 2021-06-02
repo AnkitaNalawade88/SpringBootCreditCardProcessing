@@ -1,3 +1,4 @@
+AccountNo;  // Auto generates everytime when new request is sent.
 cardNumber;
 cardHolderFirstName;
 cardHolderLastName;
@@ -32,6 +33,7 @@ Mockito
 InteliJ IDE
 postman for testing 
 Spring JPA
+Spring Initializer (start.spring.io)
 ==========================
 
 STEPS :-

@@ -31,9 +31,10 @@ class CreditCardRepositoryTest {
     }
 
     @Test
-    public void whenFindByCardNo_thenCreditCard() {
-        //CreditCard cc = creditCardRepository.findById("1358954993914435").get();
-        //assertEquals(cc.getCardNumber(), "1358954993914435");
+    public void testFindByAccountNo() {
+        CreditCard cc = creditCardRepository.findByAccountNo(1L);
+        assertEquals(cc.getCardNumber(), "1358954993914435");
+        assertEquals(cc.getAccountNo(), 1L);
 
     }
 }

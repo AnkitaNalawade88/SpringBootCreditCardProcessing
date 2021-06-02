@@ -46,4 +46,17 @@ class CreditCardServiceTest {
 
         assertEquals("1358954993914435", found.getCardNumber());
     }
+
+
+    @Test
+    @DisplayName("FetchBy AccountNo testcase")
+    public void testFetchByAccountNo() {
+
+        CreditCard found =
+                creditCardRepository.findByCardNumber("1");
+
+        assertEquals("1358954993914435", found.getCardNumber());
+        assertEquals(1L, found.getAccountNo());
+
+    }
 }

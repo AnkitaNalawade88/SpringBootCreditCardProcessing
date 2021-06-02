@@ -34,6 +34,7 @@ class CreditCardControllerTest {
     @BeforeEach
     void setUp() {
         card = CreditCard.builder()
+                .accountNo(1L)
                 .cardNumber("1358954993914435")
                 .cardHolderFirstName("ANKITA")
                 .cardHolderLastName("NALAWADE")
@@ -44,6 +45,7 @@ class CreditCardControllerTest {
     @Test
     public void testSaveCard() throws Exception {
         CreditCard inputcard = CreditCard.builder()
+                .accountNo(1L)
                 .cardNumber("135895499391443A")
                 .cardHolderFirstName("ANKITA")
                 .cardHolderLastName("NALAWADE")
@@ -56,11 +58,12 @@ class CreditCardControllerTest {
         assertEquals(1000L,inputcard.getCardLimit());
         assertEquals("NALAWADE",inputcard.getCardHolderLastName());
         assertNotNull(inputcard);
+        assertEquals(1L, inputcard.getAccountNo());
 
     }
 
     @Test
-    void fetchDepartmentById() throws Exception {
+    void fetchCreditCardByCardNumber() throws Exception {
         Mockito.when(creditCardservice.findByCardNumber("1"))
                 .thenReturn(card);
 
@@ -68,14 +71,13 @@ class CreditCardControllerTest {
         Assertions.assertNotEquals("ANKITATEST", card.getCardHolderFirstName());
     }
 
+    @Test
+    void fetchCreditCardByAccountNo() throws Exception {
+        Mockito.when(creditCardservice.findByAccountNo(1L))
+                .thenReturn(card);
 
-   /* @Ignore
-    public void whenMethodArgumentMismatch_thenBadRequest() {
-        HttpTrace.Response response = givenAuth().get(URL_PREFIX + "/cards");
-        ApiError error = response.as(ApiError.class);
+        assertEquals("ANKITA", card.getCardHolderFirstName());
+        Assertions.assertNotEquals("ANKITATEST", card.getCardHolderFirstName());
+    }
 
-        assertEquals(HttpStatus.BAD_REQUEST, response.getStatus());
-        assertEquals(1, error.getErrors().size());
-        Assertions.assertTrue(error.getErrors().get(0).contains("should be of type"));
-    }*/
 }

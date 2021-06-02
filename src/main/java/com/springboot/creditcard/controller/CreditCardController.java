@@ -1,6 +1,7 @@
 package com.springboot.creditcard.controller;
 
 import com.springboot.creditcard.entity.CreditCard;
+import com.springboot.creditcard.error.AccountNotFoundException;
 import com.springboot.creditcard.error.CardAlreadyExistException;
 import com.springboot.creditcard.error.InvalidCardNoException;
 import com.springboot.creditcard.service.CreditCardService;
@@ -45,11 +46,30 @@ public class CreditCardController {
         return creditCardService.findByCardNumber(cardNumber);
     }
 
+
+    @GetMapping("/cards/accountNo/{id}")
+    public CreditCard findByAccountNo(@PathVariable("id") Long id)
+            throws AccountNotFoundException {
+        return creditCardService.findByAccountNo(id);
+    }
+
+
+
     @DeleteMapping("/cards/{cardNumber}")
     public String deleteCreditCardByCardNo(@PathVariable("cardNumber") String cardNumber)
             throws CardNotFoundException {
 
         creditCardService.deleteCCByCardNumber(cardNumber);
         return "CreditCard deleted Successfully!!";
+    }
+
+
+
+    @DeleteMapping("/cards/account/{id}")
+    public String deleteByAccountNo(@PathVariable("id") Long accountNo)
+            throws AccountNotFoundException {
+
+        creditCardService.deleteByAccountNo(accountNo);
+        return "Account deleted Successfully!!";
     }
 }

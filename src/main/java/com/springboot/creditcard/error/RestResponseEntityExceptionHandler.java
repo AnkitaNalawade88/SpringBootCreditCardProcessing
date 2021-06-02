@@ -44,6 +44,15 @@ public class RestResponseEntityExceptionHandler
                 .body(message);
     }
 
+    @ExceptionHandler(AccountNotFoundException.class)
+    public ResponseEntity<ErrorMessage> cardNotFoundException(AccountNotFoundException exception,
+                                                              WebRequest request) {
+        ErrorMessage message = new ErrorMessage(HttpStatus.NOT_FOUND, exception.getMessage());
+
+        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body(message);
+    }
+
     @ExceptionHandler(InvalidCardNoException.class)
     public ResponseEntity<ErrorMessage> invalidCardNoException(InvalidCardNoException exception,
                                                               WebRequest request) {

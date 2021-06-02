@@ -1,7 +1,7 @@
 package com.springboot.creditcard.service;
 
-import com.springboot.creditcard.Helper.CreditCardHelper;
 import com.springboot.creditcard.entity.CreditCard;
+import com.springboot.creditcard.error.AccountNotFoundException;
 import com.springboot.creditcard.error.CardAlreadyExistException;
 import com.springboot.creditcard.error.CardNotFoundException;
 import com.springboot.creditcard.error.InvalidCardNoException;
@@ -22,30 +22,6 @@ public class CreditCardServiceImpl implements CreditCardService {
     @Autowired
     CreditCardRepository creditCardRepository;
 
-    /*
-    @Override
-    public CreditCard saveCard(CreditCard cc) throws InvalidCardNoException {
-
-        if(Objects.nonNull(cc)){
-            String cardStr = null;
-
-            if(cc.getCardNumber()!=null){
-                try {
-                    if(!checkIfCardNumberExists(cc)){
-                        cardStr = cc.getCardNumber();
-                            if (!isValidCreditCardNumber(cardStr)){
-                                throw new InvalidCardNoException(cardStr +" is not valid as per luhn algorithm");
-                            }
-                        }
-                } catch (CardAlreadyExistException e) {
-                    System.out.println(e.toString());
-                }
-            }
-        }
-        return creditCardRepository.save(cc);
-    }
-    */
-
     @Override
     public CreditCard saveCard(CreditCard cc) throws CardAlreadyExistException, InvalidCardNoException {
 
@@ -65,18 +41,6 @@ public class CreditCardServiceImpl implements CreditCardService {
         return creditCardRepository.save(cc);
     }
 
-   /* public boolean checkIfCardNumberExists(CreditCard cc) throws CardAlreadyExistException {
-            boolean cardNumberExists = false;
-
-            CreditCard checkIfAlreadyExist = creditCardRepository.findByCardNumber(cc.getCardNumber());
-            if (checkIfAlreadyExist != null) {
-                cardNumberExists = true;
-                throw new CardAlreadyExistException("There is already one card with the same no ");
-            }
-            return cardNumberExists;
-        }
-*/
-
     @Override
     public List<CreditCard> getCardList() {
         return creditCardRepository.findAll();
@@ -95,6 +59,22 @@ public class CreditCardServiceImpl implements CreditCardService {
         }
         return found;
     }
+
+
+    @Override
+    public CreditCard findByAccountNo(Long accountNo) throws AccountNotFoundException {
+        CreditCard found = null;
+        log.info("Inside findByAccountNo method"+ accountNo);
+
+        found=creditCardRepository.findByAccountNo(accountNo);
+        log.info("After the Call "+ found);
+
+        if(found == null) {
+            throw new AccountNotFoundException("Account ["+accountNo+"] not found");
+        }
+        return found;
+    }
+
 
     @Override
     public void deleteCCByCardNumber(String cardNumber) throws CardNotFoundException {
@@ -151,4 +131,24 @@ public class CreditCardServiceImpl implements CreditCardService {
     {
         return Arrays.stream(arr).sum();
     }
+
+
+    @Override
+    public void deleteByAccountNo(Long accountNo) throws AccountNotFoundException{
+
+        CreditCard found = null;
+
+        log.info("Inside deleteByAccountNo method"+ accountNo);
+
+        found=creditCardRepository.findByAccountNo(accountNo);
+
+        log.info("After the Call inside deleteByAccountNo "+ found);
+
+        if(found == null) {
+            throw new AccountNotFoundException("Account Not found "+ accountNo);
+        } else {
+            creditCardRepository.deleteByAccountNo(accountNo);
+        }
+    }
+
 }
