@@ -1,19 +1,20 @@
 package com.springboot.creditcard.service;
 
 import com.springboot.creditcard.entity.CreditCard;
-import com.springboot.creditcard.error.AccountNotFoundException;
-import com.springboot.creditcard.error.CardAlreadyExistException;
-import com.springboot.creditcard.error.CardNotFoundException;
-import com.springboot.creditcard.error.InvalidCardNoException;
+import com.springboot.creditcard.error.*;
+import com.springboot.creditcard.helper.LuhnFormula;
 import com.springboot.creditcard.repository.CreditCardRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+
+import static java.util.Objects.nonNull;
 
 @Service
 @Slf4j
@@ -22,22 +23,17 @@ public class CreditCardServiceImpl implements CreditCardService {
     @Autowired
     CreditCardRepository creditCardRepository;
 
+    LuhnFormula luhnFormula = null;
+
     @Override
-    public CreditCard saveCard(CreditCard cc) throws CardAlreadyExistException, InvalidCardNoException {
+    public CreditCard save(CreditCard cc) throws InvalidCardNoException, CardAlreadyExistException {
+        luhnFormula = new LuhnFormula();
 
-        if (Objects.nonNull(cc)) {
-            if (cc.getCardNumber() != null) {
-                CreditCard checkIfAlreadyExist = creditCardRepository.findByCardNumber(cc.getCardNumber());
-
-                if (checkIfAlreadyExist != null && checkIfAlreadyExist.getCardNumber() != null) {
-                    throw new CardAlreadyExistException("There is already one card with the same no ");
-                } else {
-                    if (!isValidCreditCardNumber(cc.getCardNumber())) {
-                        throw new InvalidCardNoException(cc.getCardNumber() + " is not valid as per luhn algorithm");
-                    }
+            if (nonNull(cc) && cc.getCardNumber() != null) {
+                if(!luhnFormula.validate(cc.getCardNumber())){
+                    throw new InvalidCardNoException(cc.getCardNumber() + " is not valid as per luhn algorithm");
                 }
             }
-        }
         return creditCardRepository.save(cc);
     }
 
@@ -47,108 +43,16 @@ public class CreditCardServiceImpl implements CreditCardService {
     }
 
     @Override
-    public CreditCard findByCardNumber(String cardNumber) throws CardNotFoundException {
-        CreditCard found = null;
-        log.info("Inside findByCardNumber method"+ cardNumber);
-
-        found=creditCardRepository.findByCardNumber(cardNumber);
-        log.info("After the Call "+ found);
-
-        if(found == null) {
-            throw new CardNotFoundException("Credit Card : ["+ cardNumber + "] Not found");
-        }
-        return found;
-    }
-
-
-    @Override
     public CreditCard findByAccountNo(Long accountNo) throws AccountNotFoundException {
         CreditCard found = null;
         log.info("Inside findByAccountNo method"+ accountNo);
 
         found=creditCardRepository.findByAccountNo(accountNo);
-        log.info("After the Call "+ found);
 
         if(found == null) {
+            log.info("Account Not found ");
             throw new AccountNotFoundException("Account ["+accountNo+"] not found");
         }
         return found;
     }
-
-
-    @Override
-    public void deleteCCByCardNumber(String cardNumber) throws CardNotFoundException {
-
-        CreditCard found = null;
-
-        log.info("Inside deleteCCByCardNumber method"+ cardNumber);
-
-        found=creditCardRepository.findByCardNumber(cardNumber);
-
-        log.info("After the Call inside deleteCCByCardNumber "+ found);
-
-        if(found == null) {
-            throw new CardNotFoundException("Credit Card : ["+ cardNumber + "] Not found");
-        } else {
-            creditCardRepository.deleteByCardNumber(cardNumber);
-        }
-    }
-
-    private static boolean isValidCreditCardNumber(String cardNumber)
-    {
-        // int array for processing the cardNumber
-        int[] cardIntArray=new int[cardNumber.length()];
-
-        for(int i=0;i<cardNumber.length();i++)
-        {
-            char c= cardNumber.charAt(i);
-            cardIntArray[i]=  Integer.parseInt(""+c);
-        }
-
-        for(int i=cardIntArray.length-2;i>=0;i=i-2)
-        {
-            int num = cardIntArray[i];
-            num = num * 2;  // step 1
-            if(num>9)
-            {
-                num = num%10 + num/10;  // step 2
-            }
-            cardIntArray[i]=num;
-        }
-
-        int sum = sumDigits(cardIntArray);  // step 3
-
-        System.out.println(sum);
-
-        if(sum%10==0)  // step 4
-        {
-            return true;
-        }
-        return false;
-    }
-
-    private static int sumDigits(int[] arr)
-    {
-        return Arrays.stream(arr).sum();
-    }
-
-
-    @Override
-    public void deleteByAccountNo(Long accountNo) throws AccountNotFoundException{
-
-        CreditCard found = null;
-
-        log.info("Inside deleteByAccountNo method"+ accountNo);
-
-        found=creditCardRepository.findByAccountNo(accountNo);
-
-        log.info("After the Call inside deleteByAccountNo "+ found);
-
-        if(found == null) {
-            throw new AccountNotFoundException("Account Not found "+ accountNo);
-        } else {
-            creditCardRepository.deleteByAccountNo(accountNo);
-        }
-    }
-
 }

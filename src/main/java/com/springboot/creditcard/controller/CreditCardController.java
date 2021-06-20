@@ -27,11 +27,7 @@ public class CreditCardController {
     @PostMapping("/cards")
     public CreditCard addNewCard(@Valid @RequestBody (required = false) CreditCard cc) throws InvalidCardNoException, CardAlreadyExistException {
         LOGGER.info("Inside addNewCard of CreditCardController");
-            return creditCardService.saveCard(cc);
-    }
-
-    private boolean isNumeric(String s) {
-        return s != null && s.matches("[-+]?\\d*\\.?\\d+");
+            return creditCardService.save(cc);
     }
 
     @GetMapping("/cards")
@@ -40,36 +36,9 @@ public class CreditCardController {
         return creditCardService.getCardList();
     }
 
-    @GetMapping("/cards/{cardNumber}")
-    public CreditCard findByCardNumber(@PathVariable("cardNumber") String cardNumber)
-            throws CardNotFoundException {
-        return creditCardService.findByCardNumber(cardNumber);
-    }
-
-
-    @GetMapping("/cards/accountNo/{id}")
+    @GetMapping("/cards/{id}")
     public CreditCard findByAccountNo(@PathVariable("id") Long id)
             throws AccountNotFoundException {
         return creditCardService.findByAccountNo(id);
-    }
-
-
-
-    @DeleteMapping("/cards/{cardNumber}")
-    public String deleteCreditCardByCardNo(@PathVariable("cardNumber") String cardNumber)
-            throws CardNotFoundException {
-
-        creditCardService.deleteCCByCardNumber(cardNumber);
-        return "CreditCard deleted Successfully!!";
-    }
-
-
-
-    @DeleteMapping("/cards/account/{id}")
-    public String deleteByAccountNo(@PathVariable("id") Long accountNo)
-            throws AccountNotFoundException {
-
-        creditCardService.deleteByAccountNo(accountNo);
-        return "Account deleted Successfully!!";
     }
 }

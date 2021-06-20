@@ -4,22 +4,6 @@ cardHolderFirstName;
 cardHolderLastName;
 cardLimit;
 
-//VALID CREDIT CARD NO - AS PER LUHN'S ALGORITHM
-{
-"cardNumber" : "1358954993914435",
-"cardHolderFirstName" : "ANKITA",
-"cardHolderLastName" : "NALAWADE",
-"cardLimit" : "1000"
-}
-
-//INVALID CARD NO - NOT AS PER LUHN'S ALGORITHM
-{
-"cardNumber" : "1358954993914410",
-"cardHolderFirstName" : "MILIND",
-"cardHolderLastName" : "BHANDARI",
-"cardLimit" : "1000"
-}
-
 ==========================
 TECHNOLOGIES USED :-
 =======================
@@ -34,6 +18,9 @@ InteliJ IDE
 postman for testing 
 Spring JPA
 Spring Initializer (start.spring.io)
+Validation
+    - javax.validations
+    - hibernate constraints
 ==========================
 
 STEPS :-
@@ -43,6 +30,6 @@ STEPS :-
 2. Run Maven install
 3. Once the maven build is successful, run the java class (SpringBootCreditCardProcessing.java) -> Right click, run as java application.
 This is the main class of the project.
-4. Attached one file named(StepsWithScreenshots.xl), refer the same and follow instructions as per the screenshots, and run the code. 
+4. Attached one file named(StepsWithScreenshot.doc), refer the same and follow instructions as per the screenshots, and run the code.
 
 

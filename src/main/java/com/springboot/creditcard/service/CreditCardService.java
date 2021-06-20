@@ -9,16 +9,11 @@ import com.springboot.creditcard.error.InvalidCardNoException;
 import java.util.List;
 
 public interface CreditCardService {
-    public CreditCard saveCard(CreditCard cc) throws InvalidCardNoException, CardAlreadyExistException;
+    public CreditCard save(CreditCard cc) throws InvalidCardNoException, CardAlreadyExistException;
 
     public List<CreditCard> getCardList();
 
-    public CreditCard findByCardNumber(String cardNumber) throws CardNotFoundException;
-
-    public void deleteCCByCardNumber(String cardNumber) throws CardNotFoundException;
-
-    public void deleteByAccountNo(Long accountNo) throws AccountNotFoundException;
-
     public CreditCard findByAccountNo(Long accountNo) throws AccountNotFoundException;
+
 
 }

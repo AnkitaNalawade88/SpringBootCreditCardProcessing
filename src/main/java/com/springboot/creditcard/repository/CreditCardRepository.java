@@ -8,15 +8,9 @@ import javax.transaction.Transactional;
 import java.util.Optional;
 
 @Repository
+@Transactional
 public interface CreditCardRepository extends JpaRepository<CreditCard, String> {
-
-    CreditCard findByCardNumber(String cardNumber);
 
     CreditCard findByAccountNo(Long accountNo);
 
-    @Transactional
-    void deleteByCardNumber(String cardNumber);
-
-    @Transactional
-    void deleteByAccountNo(Long accountNo);
 }
